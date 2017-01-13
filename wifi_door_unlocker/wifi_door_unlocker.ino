@@ -1,5 +1,16 @@
 /* Wifi door unlocker
-* Based off of the helloserver example sketch
+* Based off of the helloserver example sketch.
+* Added servo functionality.
+* 
+* Servo is only powered when it receives a command to move.
+* This allows a person to still manually lock/unlock using the knob/key.
+* 
+* Ip address and other information is sent over COM port during ESP8266 bootup.
+* You may need to tweek SERVO_OPEN_ANGLE and SERVO_CLOSE_ANGLE
+* 
+* To open door: <ip address of 8266>/doorcontrol?door=open
+* To close door: <ip address of 8266>/doorcontrol?door=close
+* 
 * Modified by Matthew From
 */
 
@@ -24,12 +35,14 @@ void handleRoot() {
 }
 
 void setDoor(bool open_close) {
+  //Start to give the servo its signal
   if (open_close == 1) {
     myservo.write(SERVO_OPEN_ANGLE);
   } else {
     myservo.write(SERVO_CLOSE_ANGLE);
   }
   delay(5);
+  //Only provide power to the servo when it has to move.
   digitalWrite(SERVO_POWER_PIN, HIGH);
   delay(500);
   digitalWrite(SERVO_POWER_PIN, LOW);
