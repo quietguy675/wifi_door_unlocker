@@ -1,3 +1,8 @@
+/* Wifi door unlocker
+* Based off of the helloserver example sketch
+* Modified by Matthew From
+*/
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -7,8 +12,8 @@
 #define SERVO_CLOSE_ANGLE 180
 #define SERVO_POWER_PIN 0
 
-const char* ssid = "The WLAN Before Time";
-const char* password = "khk1924delta";
+const char* ssid = "Your wifi SSID";
+const char* password = "Your wifi pass";
 
 ESP8266WebServer server(80);
 Servo myservo;
@@ -47,11 +52,11 @@ void handleNotFound(){
 
 void handleDoor(){
   String message = "";
-  if (server.argName(0) == "door" && server.arg(0) == "on"){
+  if (server.argName(0) == "door" && server.arg(0) == "open"){
     setDoor(1);
     server.send(200, "text/plain", "Door Should Be Open");
     return;
-  } else if (server.argName(0) == "door" && server.arg(0) == "off"){
+  } else if (server.argName(0) == "door" && server.arg(0) == "close"){
     setDoor(0);
     server.send(200, "text/plain", "Door Should Be Closed");
     return;
@@ -91,7 +96,7 @@ void setup(void){
   }
 
   server.on("/", handleRoot);
-  server.on("/wank", handleDoor);
+  server.on("/doorcontrol", handleDoor);
 
   server.on("/inline", [](){
     server.send(200, "text/plain", "this works as well");
